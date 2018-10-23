@@ -1,0 +1,9 @@
+.idea/
+node_modules/
+
+/back/dist/
+/back/coverage
+/back/.nyc_output
+
+/front/dist/
+/front/coverage

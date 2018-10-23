@@ -1,0 +1,7 @@
+instrumentation:
+  extensions:
+    - .js
+    - .ts
+  excludes:
+    - "*.d.ts"
+    - "*.spec.ts"

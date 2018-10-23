@@ -1,0 +1,19 @@
+{
+  "exclude": [
+    "**/*.d.ts",
+    "**/*.spec.ts"
+  ],
+  "reporter": [
+    "html",
+    "text"
+  ],
+  "extension": [
+    ".ts"
+  ],
+  "require": [
+    "ts-node/register",
+    "tsconfig-paths/register"
+  ],
+  "report-dir": "./back/coverage",
+  "temp-directory": "./back/.nyc_output"
+}

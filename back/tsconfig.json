@@ -1,0 +1,30 @@
+{
+  "compilerOptions": {
+    "moduleResolution": "node",
+    "declaration": true,
+    "noImplicitAny": false,
+    "removeComments": true,
+    "noLib": false,
+    "allowSyntheticDefaultImports": true,
+    "emitDecoratorMetadata": true,
+    "experimentalDecorators": true,
+    "target": "es5",
+    "sourceMap": true,
+    "outDir": "./dist",
+    "baseUrl": "./src",
+    "lib": [
+      "es2017"
+    ],
+    "paths": {
+      "@angular/*": [
+        "../../node_modules/@angular/*"
+      ],
+      "@nestjs/*": [
+        "../../node_modules/@nestjs/*"
+      ]
+    }
+  },
+  "include": [
+    "src/**/*"
+  ]
+}
