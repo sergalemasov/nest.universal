@@ -1,5 +1,6 @@
-export interface User {
-  id?: number;
+export interface IUser {
+  socketId?: string;
+  uid?: string;
   name?: string;
   avatar?: string;
 }

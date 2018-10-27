@@ -1,58 +1,76 @@
 import { Injectable } from '@angular/core';
-import { Observable, Subject } from 'rxjs';
+import { Observable } from 'rxjs';
 import { Observer } from 'rxjs';
+import { map } from 'rxjs/operators';
 import { UniversalService } from 'src/universal/universal.service';
-import { Message } from './models/message';
-import { Event } from './models/event';
+import { IMessage } from './models/message';
+import { PartialType } from 'src/types/partial';
 
 import {Socket} from 'socket.io';
 import * as socketIo from 'socket.io-client';
+import { IUser } from './models/user';
 
 const SERVER_URL = 'http://localhost:4001';
 
 @Injectable()
 export class EventsService {
-  private socket: Socket;
-  private isInBrowser: boolean;
-  private serverEventStub$ = new Subject<any>();
+  private static socketStub = {
+    on: function (_event: string | symbol, _listener: (...args: any[]) => void) { return this },
+    emit: function (_event: string | symbol, _listener: (...args: any[]) => void) { return this },
+    removeListener: function (_event: string | symbol, _listener: (...args: any[]) => void) { return this }
+  };
+  private static messageEventName = 'message';
+  private static connectEventName = 'connect';
+  private static disconnectEventName = 'disconnect';
+  private static socketIdUpdateMessage = 'socket_id_update';
+
+  private socket: Socket | PartialType<Socket>;
 
   constructor(private universalService: UniversalService) {
-    this.isInBrowser = this.universalService.isInBrowser;
   }
 
   initSocket(): void {
-    if (!this.isInBrowser) {
-      return;
-    }
-
-    this.socket = socketIo(SERVER_URL);
+    this.socket = this.universalService.isInBrowser
+      ? socketIo(SERVER_URL)
+      : EventsService.socketStub;
   }
 
-  send(message: Message): void {
-    if (!this.isInBrowser) {
-      return;
-    }
-
-    this.socket.emit('message', message);
+  sendMessage(message: IMessage): void {
+    this.send<IMessage>(EventsService.messageEventName, message);
   }
 
-  onMessage(): Observable<Message> {
-    if (!this.isInBrowser) {
-      return this.serverEventStub$.asObservable();
-    }
-
-    return new Observable<Message>((observer: Observer<Message>) => {
-      this.socket.on('message', (data: Message) => observer.next(data));
-    });
+  sendSocketIdUpdate(user: IUser): void {
+    this.send<IUser>(EventsService.socketIdUpdateMessage, user);
   }
 
-  onEvent(event: Event): Observable<any> {
-    if (!this.isInBrowser) {
-      return this.serverEventStub$.asObservable();
-    }
+  onMessage(): Observable<IMessage> {
+    return this.onEvent<IMessage>(EventsService.messageEventName);
+  }
 
-    return new Observable<Event>(observer => {
-      this.socket.on(event, () => observer.next());
+  onConnect(): Observable<string> {
+    return this.onEvent<void>(EventsService.connectEventName)
+      .pipe(map(() => this.socket.id));
+  }
+
+  onDisconnect(): Observable<void> {
+    return this.onEvent<void>(EventsService.disconnectEventName);
+  }
+
+  onGiveMeUser(): Observable<void> {
+    return this.onEvent<void>(EventsService.socketIdUpdateMessage);
+  }
+
+  private send<T>(eventName: string, data: T) {
+    this.socket.emit(eventName, data);
+  }
+
+  private onEvent<T>(eventName: string): Observable<T> {
+    return new Observable<T>((observer: Observer<T>) => {
+      const listener = (eventData?: T) => observer.next(eventData);
+
+      this.socket.on(eventName, listener);
+
+      return () => this.socket.removeListener(eventName, listener);
     });
   }
 }
