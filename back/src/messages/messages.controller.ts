@@ -1,18 +1,21 @@
-import { Controller, Get, Post, Body } from '@nestjs/common';
-import { IMessage } from './models/message';
+import { Controller, Get, Post, Body, UsePipes, ValidationPipe } from '@nestjs/common';
+import { MessageDto } from './models/message';
 import { MessagesService } from './messages.service';
+
+const messagesEndpoint = 'api/messages';
 
 @Controller()
 export class MessagesController {
   constructor(private messagesService: MessagesService) {}
 
-  @Get('api/messages')
+  @Get(messagesEndpoint)
   async findAllMessages() {
     return await this.messagesService.findAllMessages();
   }
 
-  @Post('api/messages')
-  async saveMessage(@Body() message: IMessage) {
+  @UsePipes(new ValidationPipe())
+  @Post(messagesEndpoint)
+  async saveMessage(@Body() message: MessageDto) {
     this.messagesService.saveMessage(message);
   }
 }

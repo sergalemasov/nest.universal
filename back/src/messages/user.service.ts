@@ -2,7 +2,7 @@ import { Injectable } from '@nestjs/common';
 import { Model } from 'mongoose';
 import { InjectModel } from '@nestjs/mongoose';
 import { EventsService } from '../events/events.service';
-import { IUser } from './models/user';
+import { UserDto } from './models/user';
 import { UserSchemaName } from './schemas/user.schema';
 import { IUserModel } from './models/user-model';
 
@@ -14,7 +14,7 @@ export class UserService {
     this.subscribeToSocketIdUpdate();
   }
 
-  public async getUserDetails(uid: string): Promise<IUser> {
+  public async getUserDetails(uid: string): Promise<UserDto> {
     const user = await this.userModel.findOne({ uid }).exec();
 
     return user ? {
@@ -25,7 +25,7 @@ export class UserService {
     } : null;
   }
 
-  public async updateSocketId(user: IUser) {
+  public async updateSocketId(user: UserDto) {
     const existingUser = await this.userModel.findOne({ uid: user.uid }).exec();
 
     if (existingUser) {
@@ -39,7 +39,7 @@ export class UserService {
     }
   }
 
-  public async updateName(user: IUser) {
+  public async updateName(user: UserDto) {
     const existingUser = await this.userModel.findOne({ uid: user.uid }).exec();
 
     if (!existingUser) {

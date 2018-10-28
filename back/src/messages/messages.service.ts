@@ -3,7 +3,7 @@ import { Injectable } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
 import { EventsService } from '../events/events.service';
 import { IMessageModel } from './models/message-model';
-import { IMessage } from './models/message';
+import { MessageDto } from './models/message';
 import { MessageSchemaName } from './schemas/message.schema';
 import { Action } from './models/action';
 import { UserService } from './user.service';
@@ -16,7 +16,7 @@ export class MessagesService {
     this.subscribeToDisconnect();
   }
 
-  public async saveMessage(message: IMessage): Promise<IMessageModel> {
+  public async saveMessage(message: MessageDto): Promise<IMessageModel> {
     const user = message.from;
 
     if (!user) {

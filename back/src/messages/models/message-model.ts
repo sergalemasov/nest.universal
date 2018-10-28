@@ -1,6 +1,6 @@
 import { Document } from 'mongoose';
-import { IMessage } from './message';
+import { MessageDto } from './message';
 
-export interface IMessageModel extends IMessage, Document {
+export interface IMessageModel extends MessageDto, Document {
 
 }

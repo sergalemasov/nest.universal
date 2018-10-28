@@ -1,17 +1,17 @@
 import { Injectable } from '@nestjs/common';
 import { Subject, Observable } from 'rxjs';
-import { IMessage } from '../messages/models/message';
-import { IUser } from '../messages/models/user';
+import { MessageDto } from '../messages/models/message';
+import { UserDto } from '../messages/models/user';
 
 @Injectable()
 export class EventsService {
-  private _message$ = new Subject<IMessage>();
+  private _message$ = new Subject<MessageDto>();
   private _giveMeUser$ = new Subject<string>();
   private _disconnect$ = new Subject<string>();
   private _connect$ = new Subject<string>();
-  private _socketIdUpdate$ = new Subject<IUser>();
+  private _socketIdUpdate$ = new Subject<UserDto>();
 
-  public get message$(): Observable<IMessage> {
+  public get message$(): Observable<MessageDto> {
     return this._message$.asObservable();
   }
 
@@ -23,7 +23,7 @@ export class EventsService {
     return this._connect$.asObservable();
   }
 
-  public get socketIdUpdate$(): Observable<IUser> {
+  public get socketIdUpdate$(): Observable<UserDto> {
     return this._socketIdUpdate$.asObservable();
   }
 
@@ -31,7 +31,7 @@ export class EventsService {
     return this._giveMeUser$.asObservable();
   }
 
-  public emitMessage(message: IMessage) {
+  public emitMessage(message: MessageDto) {
     this._message$.next(message);
   }
 
@@ -47,7 +47,7 @@ export class EventsService {
     this._connect$.next(socketId);
   }
 
-  public onSocketIdUpdate(user: IUser) {
+  public onSocketIdUpdate(user: UserDto) {
     this._socketIdUpdate$.next(user);
   }
 }

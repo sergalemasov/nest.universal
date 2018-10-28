@@ -1,6 +1,6 @@
 import { Document } from 'mongoose';
-import { IUser } from './user';
+import { UserDto } from './user';
 
-export interface IUserModel extends IUser, Document {
+export interface IUserModel extends UserDto, Document {
 
 }

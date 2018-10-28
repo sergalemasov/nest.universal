@@ -46,6 +46,8 @@
     "@nestjs/websockets": "5.4.0",
     "@nguniversal/express-engine": "6.1.0",
     "@nguniversal/module-map-ngfactory-loader": "6.1.0",
+    "class-transformer": "0.1.10",
+    "class-validator": "0.9.1",
     "core-js": "2.5.4",
     "mongoose": "5.3.7",
     "reflect-metadata": "0.1.12",

@@ -6,8 +6,8 @@ import {
 } from '@nestjs/websockets';
 import { Server, Client, Socket } from 'socket.io';
 import { EventsService } from './events.service';
-import { IMessage } from '../messages/models/message';
-import { IUser } from 'messages/models/user';
+import { MessageDto } from '../messages/models/message';
+import { UserDto } from 'messages/models/user';
 
 @WebSocketGateway(4001)
 export class EventsGateway implements OnGatewayInit {
@@ -35,14 +35,14 @@ export class EventsGateway implements OnGatewayInit {
   }
 
   @SubscribeMessage(EventsGateway.socketIdUpdateMessage)
-  public onSocketIdUpdate(_client: Client, user: IUser) {
+  public onSocketIdUpdate(_client: Client, user: UserDto) {
     this.eventsService.onSocketIdUpdate(user);
 
-    this.log<IUser>(EventsGateway.socketIdUpdateMessage, user);
+    this.log<UserDto>(EventsGateway.socketIdUpdateMessage, user);
   }
 
-  private emitMessage(message: IMessage) {
-    this.log<IMessage>(EventsGateway.messageEventName, message);
+  private emitMessage(message: MessageDto) {
+    this.log<MessageDto>(EventsGateway.messageEventName, message);
 
     this.server.emit(EventsGateway.messageEventName, { ...message });
   }
